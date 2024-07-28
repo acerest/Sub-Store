@@ -1,25 +1,11 @@
-# Use the official Node.js 20 slim image as a base
-FROM node:20-slim
+FROM node:16-alpine
 
-# Set the working directory inside the container
-WORKDIR /usr/src/app
+WORKDIR /app
 
-# Install PNPM globally
-RUN npm install -g pnpm
+COPY . .
 
-# Copy package.json and pnpm-lock.yaml to the working directory
-COPY backend/package.json backend/pnpm-lock.yaml ./
+RUN mkdir config
 
-# Install dependencies using PNPM
-RUN pnpm install --no-frozen-lockfile --production
+EXPOSE 3000
 
-# Copy only necessary files for production build
-COPY backend/dist ./dist
-COPY backend/sub-store.min.js ./sub-store.min.js
-
-# Expose the port your app runs on (if applicable)
-# EXPOSE 3000
-
-# Define the command to run your app
-CMD ["node", "sub-store.min.js"]
-
+CMD SUB_STORE_DATA_BASE_PATH=/app/config node sub-store.bundle.js
